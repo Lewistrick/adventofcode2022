@@ -7,9 +7,9 @@ with open("day01.txt") as lines:
             curr_sum = 0
             continue
         curr_sum += int(line)
-        sums.append(curr_sum)
     sums.append(curr_sum)
 
 sums = sorted(sums)
+print(sums)
 print("part 1:", sums[-1])
 print("part 2:", sum(sums[-3:]))
