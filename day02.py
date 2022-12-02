@@ -1,53 +1,25 @@
+wins = {"A": "Y", "B": "Z", "C": "X"}
+draws = {"A": "X", "B": "Y", "C": "Z"}
+losses = {"A": "Z", "B": "X", "C": "Y"}
+shape_points = {"A": 1, "B": 2, "C": 3, "X": 1, "Y": 2, "Z": 3}
+outcome_points = {"Z": 6, "Y": 3, "X": 0}  # Z=win, Y=draw, X=loss
+
 with open("day02.txt") as lines:
     part1 = 0
     part2 = 0
     for line in lines:
         elf, response = line.strip().split()
-        draw1 = (
-            (elf == "A" and response == "X")
-            or (elf == "B" and response == "Y")
-            or (elf == "C" and response == "Z")
-        )
-        win1 = (
-            (elf == "A" and response == "Y")
-            or (elf == "B" and response == "Z")
-            or (elf == "C" and response == "X")
-        )
-        score1 = 3 * draw1 + 6 * win1
-        if response == "X":
-            score1 += 1
-        elif response == "Y":
-            score1 += 2
-        elif response == "Z":
-            score1 += 3
-        part1 += score1
 
-        score2 = 0
-        if response == "X":  # lose
-            if elf == "A":  # rock
-                score2 += 3  # play scissors
-            elif elf == "B":  # paper
-                score2 += 1  # play rock
-            elif elf == "C":  # scissors
-                score2 += 2  # play paper
-        elif response == "Y":  # draw
-            score2 += 3
-            if elf == "A":  # rock
-                score2 += 1  # play rock
-            elif elf == "B":  # paper
-                score2 += 2  # play paper
-            elif elf == "C":  # scissors
-                score2 += 3  # play scissors
-        elif response == "Z":  # win
-            score2 += 6
-            if elf == "A":  # rock
-                score2 += 2  # play paper
-            elif elf == "B":  # paper
-                score2 += 3  # play scissors
-            elif elf == "C":  # scissors
-                score2 += 1  # play rock
-        part2 += score2
+        if response == wins[elf]:
+            part1 += outcome_points["Z"]
+        elif response == draws[elf]:
+            part1 += outcome_points["Y"]
+        part1 += shape_points[response]
+
+        part2 += outcome_points[response]
+        outcome_dict = {"X": losses, "Y": draws, "Z": wins}[response]
+        part2 += shape_points[outcome_dict[elf]]
 
 
-print(part1)
-print(part2)
+print(part1)  # 8392
+print(part2)  # 10116
