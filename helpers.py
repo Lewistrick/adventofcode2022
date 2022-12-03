@@ -3,7 +3,7 @@ from pathlib import Path
 
 def readlines(file):
     for line in Path(file).read_text().splitlines():
-        yield line.split()
+        yield line.strip()
 
 
 def read_intlines(file):
