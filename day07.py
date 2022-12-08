@@ -96,10 +96,9 @@ part1 = sum([d.size for d in smalldirs])
 print(part1)
 
 # find the space to free up
-used = current_dir.size
-needed = 30000000
 total_space = 70000000
-unused = total_space - used
+needed = 30000000
+unused = total_space - current_dir.size  # we're still in the root dir
 to_free = needed - unused
 sizes = current_dir.find_dir_sizes()
 
