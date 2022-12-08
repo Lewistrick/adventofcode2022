@@ -38,3 +38,26 @@ if __name__ == "__main__":
     # open the puzzle and the input in Chrome tabs (don't wait until they're closed)
     subprocess.Popen(f"{BROWSER} {baseurl}")
     subprocess.Popen(f"{BROWSER} {baseurl}/input")
+
+    # create the file and the input file if they don't exist
+    fn = f"day{today.day:02d}.py"
+    if not Path(fn).exists():
+        with open(fn, "w") as f:
+            f.write(f"# Day: {today}\n")
+            f.write("\n")
+            f.write("from helpers import readlines\n")
+            f.write("\n")
+            f.write(f"for line in readlines('day{today.day:02d}.txt'):\n")
+            f.write("    pass\n")
+    fn_input = f"day{today.day:02d}.txt"
+    if not Path(fn_input).exists():
+        Path(fn_input).touch()
+
+    # open the file in VS Code
+    subprocess.Popen(f"code {fn}")
+
+    # open the input file in VS Code
+    subprocess.Popen(f"code {fn_input}")
+
+    # create a git branch for the day
+    subprocess.Popen(f"git checkout -b day{today.day:02d}")
