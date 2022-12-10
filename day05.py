@@ -7,6 +7,8 @@ for line in lines:
         break
 
     # read in groups of 4 characters
+    # if no crate is found here, the group is just 4 spaces
+    # else, a crate looks like '[X] ' where X can be any letter.
     for i in range(0, len(line), 4):
         stack = line[i : i + 4]
         # if the 2nd character is a letter, add it to the stack

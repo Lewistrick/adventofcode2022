@@ -5,6 +5,7 @@ day in a Chrome tab. Make sure you're logged in to AoC first.
 """
 
 BROWSER = '"C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"'
+EDITOR = r'"C:\Users\erick\AppData\Local\Programs\Microsoft VS Code\bin\code"'
 
 from pathlib import Path
 import subprocess
@@ -53,11 +54,11 @@ if __name__ == "__main__":
     if not Path(fn_input).exists():
         Path(fn_input).touch()
 
-    # open the file in VS Code
-    subprocess.Popen(f"code {fn}")
+    # open the file in IDE
+    subprocess.Popen(f"{EDITOR} {fn}")
 
-    # open the input file in VS Code
-    subprocess.Popen(f"code {fn_input}")
+    # open the input file in IDE
+    subprocess.Popen(f"{EDITOR} {fn_input}")
 
     # create a git branch for the day
     subprocess.Popen(f"git checkout -b day{today.day:02d}")
