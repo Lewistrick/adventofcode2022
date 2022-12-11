@@ -24,7 +24,7 @@ for idx, value in enumerate(cycles):
     if idx % 40 in range(value - 1, value + 2):
         currline += "██"  # using 2 characters reads easier
     else:
-        currline += "  "
+        currline += "░░"
     if idx % 40 == 39:
         lines.append(currline)
         currline = ""
