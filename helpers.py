@@ -11,6 +11,10 @@ from pathlib import Path
 import subprocess
 import datetime
 
+DIRS4 = ((0, -1), (1, 0), (0, 1), (-1, 0))
+DIRS8 = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
+DIRS9 = ((dx, dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1))
+
 
 def readlines(file):
     for line in Path(file).read_text().splitlines():
@@ -25,6 +29,16 @@ def read_intlines(file):
 def read_splitlines(file, sep=None):
     for line in readlines(file):
         yield line.split(sep)
+
+
+def read_grid(file, sep=None):
+    grid = []
+    for line in readlines(file):
+        if sep is None:
+            grid.append(list(line))
+        else:
+            grid.append(line.split(sep))
+    return grid
 
 
 if __name__ == "__main__":
