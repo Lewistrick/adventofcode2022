@@ -37,35 +37,33 @@ def get_dist_grid(
     x0, y0 = finish
     seen.add(finish)
 
-    expand = defaultdict(set)  # for each distance, the positions to expand from
-    expand[0].add(finish)
+    expand = [finish]
 
     while expand:
-        # get the smallest distance and remove it from the expand dict
-        dist = min(expand.keys())
-        positions = expand.pop(dist)
+        xold, yold = expand.pop(0)
+        # get the distance from the finish
+        dist = distgrid[yold][xold]
 
         # for each position, expand to all neighbours
-        for xold, yold in positions:
-            for dx, dy in DIRS4:
-                xnew, ynew = xold + dx, yold + dy
-                if (xnew, ynew) in seen:
-                    continue
-                if not (0 <= xnew < len(grid[0]) and 0 <= ynew < len(grid)):
-                    continue
+        for dx, dy in DIRS4:
+            xnew, ynew = xold + dx, yold + dy
+            if (xnew, ynew) in seen:
+                continue
+            if not (0 <= xnew < len(grid[0]) and 0 <= ynew < len(grid)):
+                continue
 
-                highval = grid[yold][xold]
-                lowval = grid[ynew][xnew]
+            highval = grid[yold][xold]
+            lowval = grid[ynew][xnew]
 
-                # highval can be at most 1 higher than lowval
-                if highval > lowval + 1:
-                    continue
+            # highval can be at most 1 higher than lowval
+            if highval > lowval + 1:
+                continue
 
-                expand[dist + 1].add((xnew, ynew))
-                seen.add((xnew, ynew))
-                distgrid[ynew][xnew] = dist + 1
+            expand.append((xnew, ynew))
+            seen.add((xnew, ynew))
+            distgrid[ynew][xnew] = dist + 1
 
-    return distgrid, seen
+    return distgrid
 
 
 startpos = None
@@ -88,7 +86,7 @@ for y, row in enumerate(strgrid):
     intgrid.append(currow)
     currow = []
 
-distgrid, tiles_seen = get_dist_grid(intgrid, endpos)
+distgrid = get_dist_grid(intgrid, endpos)
 
 if PLOT:
     # plot grid as image
