@@ -1,11 +1,12 @@
 # Day: 2022-12-12
 
-from collections import defaultdict
-from helpers import DIRS4, read_grid
-import numpy as np
-import matplotlib.pyplot as plt
-from loguru import logger
 import sys
+
+import matplotlib.pyplot as plt
+import numpy as np
+from loguru import logger
+
+from helpers import DIRS4, read_grid
 
 logger.remove()
 logger.add(sys.stdout, level="DEBUG")
@@ -105,7 +106,6 @@ print(f"Part 1: {part1}")
 # find all positions with 'a'
 lowpos = np.argwhere(np.array(strgrid) == "a")
 
-# find the distances to all of these positions
-lowpos_values = [distgrid[y][x] for y, x in lowpos]
-lowpos_values_filter = [v for v in lowpos_values if v > 0]
-print(f"Part 2: {min(lowpos_values_filter)}")
+# find the distances to all of these positions (if they are reachable)
+lowpos_values = [distgrid[y][x] for y, x in lowpos if distgrid[y][x] > 0]
+print(f"Part 2: {min(lowpos_values)}")

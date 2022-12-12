@@ -12,6 +12,8 @@ import subprocess
 import datetime
 
 DIRS4 = ((0, -1), (1, 0), (0, 1), (-1, 0))
+DIRS8 = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
+DIRS9 = ((dx, dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1))
 
 
 def readlines(file):
