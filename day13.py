@@ -42,20 +42,31 @@ class Element:
             return len(self.val) <= len(other.val)
 
     def __lt__(self, other) -> bool:
-        """Compare self < other using the <= operator."""
+        """Compare self < other.
+
+        (self < other) means that !(other <= self) so we can reuse the __le__ operator.
+        """
         return not other <= self
 
     def __gt__(self, other) -> bool:
-        """Compare self > other."""
+        """Compare self > other.
+
+        (self > other) means that !(self <= other) so we can reuse the __le__ operator.
+        """
         return not self <= other
+
+    def __ge__(self, other) -> bool:
+        """Compare self >= other.
+
+        (self >= other) means that (other <= self) so we can reuse the __le__ operator.
+        """
+        return other <= self
 
 
 n_correct_order = 0
 
 # create divider packets (for part 2)
-div2 = Element([[2]])
-div6 = Element([[6]])
-all_elements: list[Element] = [div2, div6]
+all_elements: list[Element] = []
 for pidx, pair in enumerate(pairs, 1):
     left, right = map(Element, pair)
     all_elements.append(left)
@@ -67,11 +78,11 @@ for pidx, pair in enumerate(pairs, 1):
 
 print(f"Part 1: {n_correct_order}")
 
-# having Element objects that have < and > operators, we can sort them
-all_elements.sort()
-
-# find indices of divider packets (1-indexed)
-idx2 = all_elements.index(div2) + 1
-idx6 = all_elements.index(div6) + 1
+# For part 2, we don't need to sort the elements. We just need to know how many
+# elements are smaller than the dividers.
+div2 = Element([[2]])
+div6 = Element([[6]])
+idx2 = sum(1 for el in all_elements if el < div2) + 1 # +1 for 1-based indexing
+idx6 = sum(1 for el in all_elements if el < div6) + 2 # +1 extra for div2
 
 print(f"Part 2: {idx2 * idx6}")
