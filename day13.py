@@ -18,6 +18,7 @@ class Element:
         self.val: NestedIntList = val
 
     def __le__(self, other) -> bool:
+        """Compare self <= other."""
         if isinstance(self.val, int) and isinstance(other.val, int):
             return self.val <= other.val
         elif isinstance(self.val, int) and isinstance(other.val, list):
@@ -26,7 +27,7 @@ class Element:
         elif isinstance(self.val, list) and isinstance(other.val, int):
             newother = Element([other.val])
             return self <= newother
-        else:  # both are lists
+        else:
             for left, right in zip(self.val, other.val):
                 left_el = Element(left)
                 right_el = Element(right)
@@ -40,6 +41,7 @@ class Element:
             return len(self.val) <= len(other.val)
 
     def __lt__(self, other) -> bool:
+        """Compare self < other."""
         if isinstance(self.val, int) and isinstance(other.val, int):
             return self.val < other.val
         elif isinstance(self.val, int) and isinstance(other.val, list):
@@ -62,26 +64,8 @@ class Element:
         return len(self.val) < len(other.val)
 
     def __gt__(self, other) -> bool:
-        if isinstance(self.val, int) and isinstance(other.val, int):
-            return self.val > other.val
-        elif isinstance(self.val, int) and isinstance(other.val, list):
-            newself = Element([self.val])
-            return newself > other
-        elif isinstance(self.val, list) and isinstance(other.val, int):
-            newother = Element([other.val])
-            return self > newother
-        else:
-            for left, right in zip(self.val, other.val):
-                left_el = Element(left)
-                right_el = Element(right)
-                if left_el > right_el:
-                    return True
-                elif left_el < right_el:
-                    return False
-
-        # if we get here, all elements up to here are equal
-        # so the shorter list is the smaller one
-        return len(self.val) > len(other.val)
+        """Compare self > other."""
+        return not self <= other
 
 
 n_correct_order = 0
