@@ -2,10 +2,10 @@
 
 import math
 import re
+import sys
+from pathlib import Path
 
 from loguru import logger
-from pathlib import Path
-import sys
 
 Action = tuple[int, int]
 
@@ -96,7 +96,7 @@ for monkey in monkeys.values():
 
 n_rounds = 20 if not PART2 else 10000
 for roundno in range(1, n_rounds + 1):
-    for id, monkey in monkeys.items():
+    for monkey in monkeys.values():
         actions = monkey.do_actions()
         for value, target in actions:
             monkeys[target].items.append(value)

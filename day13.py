@@ -6,9 +6,9 @@ from pathlib import Path
 IntOrList = int | list[int]
 NestedIntList = IntOrList | list[IntOrList]
 
-pairs = Path("day13.txt").read_text().split("\n\n")
-pairs = [pair.split("\n") for pair in pairs]
-pairs: list[tuple[NestedIntList]] = [(eval(pair[0]), eval(pair[1])) for pair in pairs]
+pairs_lines: list[str] = Path("day13.txt").read_text().split("\n\n")
+pair_lines: list[list[str]] = [pair.split("\n") for pair in pairs_lines]
+pairs: list[tuple[NestedIntList]] = [(eval(p[0]), eval(p[1])) for p in pair_lines]
 
 
 class Element:
@@ -69,12 +69,9 @@ n_correct_order = 0
 all_elements: list[Element] = []
 for pidx, pair in enumerate(pairs, 1):
     left, right = map(Element, pair)
-    all_elements.append(left)
-    all_elements.append(right)
-
+    all_elements += [left, right]
     if left <= right:
         n_correct_order += pidx
-
 
 print(f"Part 1: {n_correct_order}")
 
@@ -82,7 +79,7 @@ print(f"Part 1: {n_correct_order}")
 # elements are smaller than the dividers.
 div2 = Element([[2]])
 div6 = Element([[6]])
-idx2 = sum(1 for el in all_elements if el < div2) + 1 # +1 for 1-based indexing
-idx6 = sum(1 for el in all_elements if el < div6) + 2 # +1 extra for div2
+idx2 = sum(1 for el in all_elements if el < div2) + 1  # +1 for 1-based indexing
+idx6 = sum(1 for el in all_elements if el < div6) + 2  # +1 extra for div2
 
 print(f"Part 2: {idx2 * idx6}")

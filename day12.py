@@ -35,7 +35,6 @@ def get_dist_grid(
     # create a zeroes grid to fill with distances
     distgrid = np.zeros((len(grid), len(grid[0])), dtype=int)
 
-    x0, y0 = finish
     seen.add(finish)
 
     expand = [finish]
