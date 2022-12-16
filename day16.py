@@ -91,18 +91,19 @@ while not stack.empty():
     valve = valves[name]
 
     n_paths += 1
-    if n_paths < 1000000 and n_paths % 100000 == 0:
+    if n_paths <= 1000000 and n_paths % 100000 == 0:
         logger.debug(f"Checked {n_paths} paths, stack size={stack.qsize()}")
-    if n_paths % 1000000 == 0:
-        logger.debug(f"Checked {n_paths // 1000000}M paths, stack size={stack.qsize()}")
+
+    if n_paths >= 1000000:
+        logger.debug(f"Checked 1M paths, stack size={stack.qsize()}")
+        break
 
     if minute == 30:
         if new_total > best_solution:
             best_solution = new_total
             best_path = path.copy()
             best_npaths = n_paths
-            if best_solution == correct:
-                break
+            logger.success(f"Best ({best_solution}): {'-'.join(best_path)}")
         continue
 
     # release pressure
@@ -117,8 +118,7 @@ while not stack.empty():
             best_path = path.copy()
             best_npaths = n_paths
             best_path.append("stay")
-            if best_solution == correct:
-                break
+            logger.success(f"Best  ({best_solution}): {'-'.join(best_path)}")
         continue
 
     # items with low priority are checked first
@@ -158,8 +158,8 @@ while not stack.empty():
 
         # if the only tunnel from this valve is the one we came from, and the valve is
         # not open, we don't go back without opening it
-        # if is_dead_end(tunnel, name, valves, opened) and tunnel in opened:
-        #     continue
+        if is_dead_end(tunnel, name, tuple(opened)) and tunnel in opened:
+            continue
 
         new_path = path.copy()
         new_path.append(tunnel)
@@ -181,4 +181,4 @@ logger.debug(f"Found after {best_npaths} paths")
 
 logger.success(f"Best  ({best_solution}): {'-'.join(best_path)}")
 # too low: 1420, 1638
-# correct: 1737 (#paths: 360913)
+# correct: 1737 (#paths: 207816)
