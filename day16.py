@@ -1,3 +1,4 @@
+import itertools
 from functools import lru_cache
 from queue import PriorityQueue
 
@@ -76,9 +77,6 @@ StackTuple = tuple[float, str, list[str], set[str], int, int, int]
 stack: PriorityQueue[StackTuple] = PriorityQueue()
 stack.put((0, "AA", ["AA"], set(), 0, 0, 0))
 
-# StackTuple = tuple[str, list[str], set[str], int, int, int]
-# stack: list[StackTuple] = [("AA", ["AA"], set(), 0, 0, 0)]
-
 best_solution: int = 0  # highest total release; too low: 1420
 best_path = []
 best_npaths = 0
@@ -110,7 +108,8 @@ while not stack.empty():
     new_total = total + sub
 
     # if all valves are opened, we just stay where we are
-    if all(v in opened for v in valves if valves[v].pressure > 0):
+    closed_valves = {v for v in valves if valves[v].pressure > 0 and v not in opened}
+    if not closed_valves:
         remaining_minutes = 30 - minute
         new_total = total + sub * remaining_minutes
         if new_total > best_solution:
@@ -121,7 +120,11 @@ while not stack.empty():
             logger.success(f"Best  ({best_solution}): {'-'.join(best_path)}")
         continue
 
-    # items with low priority are checked first
+    # possible improvement: if there's one closed valve, find the shortest path to it
+
+    # items with low priority are checked first;
+    # comments behind the lines indicate the number of paths to check before finding
+    # the best solution for the example input
     # prio = (minute * 100) / (new_total * sub + 1)
     # prio = minute**2.9 / (new_total - sub + 1)  # 24973
     # prio = minute**2.8 / (new_total - sub + 1)  # 13977
@@ -182,3 +185,78 @@ logger.debug(f"Found after {best_npaths} paths")
 logger.success(f"Best  ({best_solution}): {'-'.join(best_path)}")
 # too low: 1420, 1638
 # correct: 1737 (#paths: 207816)
+
+#######################################################################################
+# Part 2
+# (prio, mypos, elpos, opened, sub, total, timeleft)
+# prio: priority of the stack item
+# mypos: position of the player
+# elpos: position of the elephant
+# opened: set of valves that are opened
+# sub: total pressure of opened valves
+# total: total amount of pressure released (sum of all opened valves in each minute)
+# minute: current minute
+
+StackTupleElephant = tuple[float, str, str, set[str], int, int, int]
+stack2: PriorityQueue[StackTupleElephant] = PriorityQueue()
+stack2.put((0, "AA", "AA", set(), 0, 0, 26))
+
+best_solution2: int = 0
+while stack2:
+    prio, mypos, elpos, opened, sub, total, timeleft = stack2.get()
+
+    if timeleft == 0:
+        if total > best_solution2:
+            best_solution2 = total
+        continue
+
+    # release pressure
+    new_total = total + sub
+
+    # if all valves are opened, we just stay where we are
+    closed_valves = {v for v in valves if valves[v].pressure > 0 and v not in opened}
+    if not closed_valves:
+        new_total = total + sub * timeleft
+        if new_total > best_solution2:
+            best_solution2 = new_total
+        continue
+
+    # possible improvement: if there's one closed valve, find the shortest path to it
+
+    # items with low priority are checked first
+    prio = minute - new_total - sub
+
+    # now there are 4 possibilities, opening the valve or walking through a tunnel
+    # for the player and the elephant
+
+    # possibility 1: both open a valve
+    if (
+        (mypos not in opened and valves[mypos].pressure > 0)  # I can open
+        and (elpos not in opened and valves[elpos].pressure > 0)  # elephant can open
+        and mypos != elpos  # only useful if we're in different positions
+    ):
+        # open valve
+        new_open = opened.copy() | {mypos, elpos}
+        new_sub = sub + valves[mypos].pressure + valves[elpos].pressure
+        # (prio, mypos, elpos, opened, sub, total, timeleft)
+        stack2.put((prio, mypos, elpos, new_open, new_sub, new_total, timeleft - 1))
+
+    # possibility 2+3: one opens a valve, the other walks through a tunnel
+    for p1, p2 in zip((mypos, elpos), (elpos, mypos)):
+        # p1 opens valve
+        new_open = opened.copy() | {p1}
+        new_sub = sub + valves[p1].pressure
+
+        # p2 walks through tunnel ## TODO
+
+        # check if this is a dead end with only open valves
+        if is_dead_end(source=p2, target=tunnel, opened=tuple(opened)):
+            continue
+        if is_dead_end(tunnel, p2, tuple(opened)) and tunnel in opened:
+            continue
+
+        new_path = path.copy()
+        new_path.append(tunnel)
+        new_open = opened.copy()
+        # (prio, name, path, opened, sub, total, minute)
+        stack.put((prio, tunnel, new_path, new_open, sub, new_total, minute + 1))
