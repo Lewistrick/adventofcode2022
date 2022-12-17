@@ -16,6 +16,11 @@ DIRS8 = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
 DIRS9 = ((dx, dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1))
 
 
+def readchars(file):
+    line = Path(file).read_text()
+    return list(line.rstrip())
+
+
 def readlines(file):
     for line in Path(file).read_text().splitlines():
         yield line.rstrip()
