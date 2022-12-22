@@ -9,14 +9,15 @@ def show_grid(grid, dir, x, y, comment, nxt):
     print(f"{comment} ({x=} {y=} {dir=}")
     shown_sep = False
     for my, line in enumerate(grid):
-        # if abs(my - y) > 10:
-        #     if y < 10 and my > len(grid) - 10:
-        #         pass
-        #     else:
-        #         if not shown_sep:
-        #             print("~" * len(line) + "|")
-        #             shown_sep = True
-        #         continue
+        if DEBUG:
+            if abs(my - y) > 10:
+                if y < 10 and my > len(grid) - 10:
+                    pass
+                else:
+                    if not shown_sep:
+                        print("~" * len(line) + "|")
+                        shown_sep = True
+                    continue
 
         for mx, ch in enumerate(line):
             if (mx, my) == (x, y):
